@@ -11,7 +11,7 @@ module.exports = function (basePath) {
         
         const PORT = '8080';
         const BASE_PATH = basePath;
-        var HOST = 'http://192.168.88.1';
+        var HOST = 'http://localhost';
         
         return {
             
