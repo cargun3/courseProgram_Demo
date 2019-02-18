@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.course.CourseMapper">
+	
+	<resultMap type="CourseVO" id="courseList">
+		<id property="seq" column="COURSE_IDX" />
+		<result property="name" column="COURSE_NAME" />
+		<result property="score" column="COURSE_SCORE" />
+		<result property="total" column="FOUND_ROWS()" />
+		<association property="professor" javaType="com.example.demo.domain.user.ProfessorVO">
+			<result property="seq" column="PROFESSOR_IDX" />
+			<result property="name" column="PROFESSOR_NAME" />
+		</association>
+		<collection property="courseTimeList" javaType="java.util.ArrayList" ofType="com.example.demo.domain.course.CourseTimeVO">
+		 	<result property="seq" column="COURSE_TIME_IDX" />
+			<result property="info" column="COURSE_TIME_INFO" />
+		</collection>
+	</resultMap>
+	
+	<!-- 수업 조회 -->
+	<select id="selectCourseList" resultMap="courseList" parameterType="Map">
+		SELECT 
+			SQL_CALC_FOUND_ROWS 
+			TC.COURSE_IDX
+			, TC.COURSE_NAME
+			, TC.COURSE_SCORE 
+			, TR.PROFESSOR_IDX
+			, TR.PROFESSOR_NAME
+			, TCT.COURSE_TIME_IDX
+			, TCT.COURSE_TIME_INFO
+		FROM TB_COURSE TC
+		LEFT OUTER JOIN TB_PROFESSOR TR ON TC.PROFESSOR_IDX = TR.PROFESSOR_IDX
+		LEFT OUTER JOIN TB_COURSE_TIME TCT ON TC.COURSE_IDX = TCT.COURSE_IDX
+		WHERE 1=1
+		<!-- 검색 -->
+		<if test="searchName != null and searchName != ''">
+			<choose>
+				<when test='searchType.toString() == "professorName"'>
+					AND TR.PROFESSOR_NAME like concat('%',  #{searchName}, '%')
+				</when>
+				<when test='searchType.toString() == "courseName"'>
+					AND TC.COURSE_NAME like concat('%',  #{searchName}, '%')
+				</when>
+			</choose>
+		</if>
+		<!-- 페이징 -->
+		<if test="paging.limit != 0">
+			LIMIT #{paging.offset}, #{paging.limit}
+		</if>
+	</select>
+	
+	<resultMap type="UserCourseVO" id="userCourseList">
+		<id property="seq" column="REGISTER_IDX" />
+		<association property="courseVO" javaType="com.example.demo.domain.course.CourseVO">
+			<result property="seq" column="COURSE_IDX" />
+			<result property="name" column="COURSE_NAME" />
+			<result property="score" column="COURSE_SCORE" />
+			<association property="professor" javaType="com.example.demo.domain.user.ProfessorVO">
+				<!-- <result property="seq" column="PROFESSOR_IDX" /> -->
+				<result property="name" column="PROFESSOR_NAME" />
+			</association>
+			<collection property="courseTimeList" javaType="java.util.ArrayList" ofType="com.example.demo.domain.course.CourseTimeVO">
+			 	<result property="seq" column="COURSE_TIME_IDX" />
+				<result property="info" column="COURSE_TIME_INFO" />
+				<collection property="timeTable" javaType="java.util.ArrayList" ofType="com.example.demo.domain.course.CourseTimetableVO">
+					<result property="day" column="TIME_TABLE_DAY" />
+					<result property="start" column="TIME_TABLE_START" />
+					<result property="end" column="TIME_TABLE_END" />
+				</collection>
+			</collection>
+	</association>
+	</resultMap>
+	
+	<!-- 사용자가 등록한 수업 조회 -->
+	<select id="selectUserCourseList" resultMap="userCourseList" parameterType="Map">
+		SELECT 
+			SQL_CALC_FOUND_ROWS 
+			TRC.REGISTER_IDX
+			, TC.COURSE_IDX
+			, TC.COURSE_NAME
+			, TC.COURSE_SCORE
+			, TCR.COURSE_TIME_IDX
+			, TCR.COURSE_TIME_INFO
+			, TR.PROFESSOR_NAME
+			, CT.TIME_TABLE_DAY
+			, CT.TIME_TABLE_START
+			, CT.TIME_TABLE_END
+		FROM TB_REGISTER_COURSE TRC
+		LEFT OUTER JOIN TB_COURSE_TIME_TABLE CT ON TRC.COURSE_TIME_IDX = CT.COURSE_TIME_IDX
+		LEFT OUTER JOIN TB_COURSE_TIME TCR ON TRC.COURSE_TIME_IDX = TCR.COURSE_TIME_IDX
+		LEFT OUTER JOIN TB_COURSE TC ON TCR.COURSE_IDX = TC.COURSE_IDX
+		LEFT OUTER JOIN TB_PROFESSOR TR ON TC.PROFESSOR_IDX = TR.PROFESSOR_IDX
+		WHERE TRC.MEMBER_IDX=#{memberSeq}
+		<!-- 페이징 -->
+		<if test="paging.limit != 0">
+			LIMIT #{paging.offset}, #{paging.limit}
+		</if>
+	</select>
+	
+	
+	<!-- 동시 신청 중복 체크 -->
+	<select id="selectSameTimeOverLapCourseList" resultType="String" parameterType="Map">
+		SELECT
+			TC.COURSE_NAME
+		FROM TB_COURSE TC
+		LEFT OUTER JOIN TB_COURSE_TIME TR ON TC.COURSE_IDX = TR.COURSE_IDX 
+		WHERE TR.COURSE_TIME_IDX IN
+		<foreach item="course" collection="courseList" open="(" separator="," close=")">
+				#{course}
+		</foreach>
+		GROUP BY TC.COURSE_NAME HAVING COUNT(TC.COURSE_NAME) > 1;
+	</select>
+	
+	<!-- 수업 중복 체크 -->
+	<select id="selectOverLapCourseList" resultType="String" parameterType="Map">
+		SELECT
+			DISTINCT QQ.COURSE_NAME
+		FROM 
+		(
+			SELECT 
+				A.COURSE_IDX
+				,A.COURSE_TIME_IDX
+				,B.COURSE_NAME
+				,C.TIME_TABLE_DAY
+				,C.TIME_TABLE_START
+				,C.TIME_TABLE_END
+			FROM TB_COURSE_TIME A
+			LEFT OUTER JOIN TB_COURSE B ON A.COURSE_IDX = B.COURSE_IDX
+			LEFT OUTER JOIN TB_COURSE_TIME_TABLE C ON A.COURSE_TIME_IDX = C.COURSE_TIME_IDX
+			WHERE A.COURSE_TIME_IDX IN
+			<foreach item="course" collection="courseList" open="(" separator="," close=")">
+				#{course}
+			</foreach>
+		) QQ
+		INNER JOIN 
+		(
+			SELECT 
+				TCT.COURSE_IDX
+				,TC.COURSE_NAME
+				,TCT.COURSE_TIME_IDX
+				,TT.TIME_TABLE_DAY
+				,TT.TIME_TABLE_START
+				,TT.TIME_TABLE_END
+			FROM TB_COURSE TC
+			LEFT OUTER JOIN TB_COURSE_TIME TCT ON TC.COURSE_IDX = TCT.COURSE_IDX
+			LEFT OUTER JOIN TB_REGISTER_COURSE TR ON TCT.COURSE_TIME_IDX = TR.COURSE_TIME_IDX
+			LEFT OUTER JOIN TB_COURSE_TIME_TABLE TT ON TCT.COURSE_TIME_IDX = TT.COURSE_TIME_IDX
+			WHERE TR.MEMBER_IDX = #{memberSeq}
+		) PP ON QQ.COURSE_IDX = PP.COURSE_IDX 
+		OR (QQ.TIME_TABLE_DAY=PP.TIME_TABLE_DAY AND QQ.TIME_TABLE_START=PP.TIME_TABLE_START AND QQ.TIME_TABLE_END=PP.TIME_TABLE_END)
+	</select>
+	
+	<!-- 수업 등록 -->
+	<insert id="insertCourse" parameterType="Map">
+		INSERT INTO TB_REGISTER_COURSE (
+                       MEMBER_IDX
+                     , COURSE_TIME_IDX
+                     , REGISTER_DATE
+                 ) VALUES
+             <foreach item="course" collection="courseList" separator=",">
+                (
+                       #{memberSeq}
+                     , #{course}                         
+                     , NOW()
+                )
+             </foreach>
+	
+	</insert>
+	
+	<!-- 수업 취소 -->
+	<delete id="deleteCourseInfo">
+		DELETE FROM TB_REGISTER_COURSE
+		WHERE REGISTER_IDX=#{courseTimeSeq}
+	</delete>
+</mapper>
