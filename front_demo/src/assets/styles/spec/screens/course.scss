@@ -1,0 +1,144 @@
+.course-app {
+  .course-side-nav {
+    background: $default-white;
+    position: fixed;
+    border-right: 1px solid $border-color;
+    float: left;
+    width: 250px;
+    transition: all 0.3s ease-in-out;
+
+    @include to($breakpoint-md) {
+      z-index: 1;
+      left: -250px;
+    }
+  }
+
+  .course-wrapper {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    min-height: 100%;
+    transition: all 0.3s ease-in-out;
+
+    @include to($breakpoint-md) {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    @include from($breakpoint-md) {
+    }
+
+    .course-list {
+      position: relative;
+      padding: 0;
+      width: 100%;
+      overflow-y: hidden;
+      background-color: $default-white;
+      height: calc(100vh - #{$header-height});
+
+      @include to($breakpoint-md) {
+        max-height: calc(100vh - 65px);
+      }
+
+      @include from($breakpoint-md) {
+        width: 40%;
+        border-right: 1px solid $border-color;
+        float: left;
+      }
+    }
+
+    .course-content {
+      float: left;
+      width: 60%;
+      position: relative;
+      padding: 0;
+      background-color: $default-white;
+      // min-height: calc(100vh - #{$header-height});
+
+      &.no-inbox-view {
+        width: 100%;
+      }
+
+      @include to($breakpoint-md) {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        width: 100%;
+        height: 100%;
+        transition: all 0.3s ease-in-out;
+        max-height: calc(100vh - #{$header-height});
+        overflow-y: scroll;
+
+        &.open {
+          left: 0;
+        }
+      }
+    }
+
+      .course-compose {
+        position: relative;
+      .course-compose-body {
+        padding: 30px 20px;
+
+      }
+      }
+    }
+
+
+    &.side-active {
+      .course-side-nav {
+        @include to($breakpoint-md) {
+          left: 0;
+        }
+      }
+
+      .course-wrapper {
+        @include to($breakpoint-md) {
+          left: 250px;
+        }
+      }
+    }
+
+    .form-check {
+      display: inline-block !important;
+      padding-left: 20px;
+      padding-left: 1.25rem !important;
+    }
+
+    .dataTables_filter {
+        float: unset !important;
+    }
+
+    .dataTables_filter input {
+      border: 1px solid rgba(0,0,0,.0625);
+      border-radius: 2px;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      height: 35px;
+      font-size: 14px;
+      /*margin-left: 15px;*/
+      /* padding: 5px; */
+      margin-top: 5px;
+      margin-bottom: 5px;
+      color: #72777a;
+      -webkit-transition: all .2s ease-in;
+      -o-transition: all .2s ease-in;
+      transition: all .2s ease-in;
+}
+
+
+    .checkbox label:after, 
+    .checkbox label:before {
+    display: inline-block;
+    position: absolute;
+    width: 17px;
+    height: 17px;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    margin-left: -17px;
+}  
+}

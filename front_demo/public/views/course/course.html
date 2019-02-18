@@ -1,0 +1,594 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Email</title>
+    <% include ../layout/head.html %>
+</head>
+<body class="app">
+<% include ../layout/side.html %>
+<% include ../layout/header.html %>
+<!-- ### $App Screen Content ### -->
+<main class="main-content bgc-grey-100">
+			<div id="mainContent">
+				<div class="full-container">
+					<div class="course-app">
+						<div class="course-wrapper row remain-height bgc-white ov-h">
+							<div class="course-list h-100 layers">
+								<div class="layer w-100">
+									<div class="bgc-grey-100 peers ai-c jc-sb p-20 fxw-nw">
+										<h4 class="c-grey-900">과목 정보</h4>
+										<div class="peer">
+											<div class="btn-group" role="group">
+												<button type="button" class="my-course-toggle d-n@md+ btn bgc-white bdrs-2 mR-3 cur-p">
+													<i class="ti-angle-right"></i>
+												</button>
+												<button type="button" id="registerBtn"
+													class="btn bgc-white bdrs-2 mR-3 cur-p" data-toggle="modal" data-target="#exampleModal">
+													<i class="ti-folder"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="layer w-100 fxg-1 scrollable pos-r ps">
+
+									<div id="dataTable_wrapper" class="dataTables_wrapper">
+										<div
+											style="display: inline-block;
+	/* border: 1px solid rgba(0,0,0,.0625); */ margin-right: 14px;
+	/* height: 35px; */ margin-left: 5px;">
+
+											<div class="form-check">
+												<label class="form-check-label"><input
+													class="form-check-input" type="radio" name="searchTypeRadios"
+													value="courseName" checked="checked">과목명</label>
+											</div>
+											<div class="form-check">
+												<label class="form-check-label"><input
+													class="form-check-input" type="radio" name="searchTypeRadios"
+													value="professorName">교수명</label>
+											</div>
+										</div>
+										<div style="display: inline-block;">
+											<div id="dataTable_filter" class="dataTables_filter"
+												style="display: inline-block;">
+												<label><input id="searchName" type="search" class="" placeholder=""
+													aria-controls="dataTable"></label>
+											</div>
+										</div>
+										<button id="searchCourse" class="btn btn-primary"
+											style="float: right; display: inline-block; vertical-align: middle; margin-top: 5px; margin-right: 5px;">검색</button>
+										<table class="table table-bordered">
+											<colgroup>
+												<col width="12%" />
+												<col width="16%" />
+												<col width="22%" />
+												<col width="12%" />
+												<col width="22%" />
+												<col width="*" />
+											</colgroup>
+											<thead>
+												<tr role="row">
+													<th class="sorting_asc" tabindex="0"
+														aria-controls="dataTable" rowspan="1" colspan="1"
+														aria-sort="ascending"
+														aria-label="Name: activate to sort column descending"
+														style="width: 20px;">선택</th>
+													<th class="sorting_asc" tabindex="0"
+														aria-controls="dataTable" rowspan="1" colspan="1"
+														aria-sort="ascending"
+														aria-label="Name: activate to sort column descending"
+														style="width: 80px;">과목번호</th>
+													<th class="sorting" tabindex="0" aria-controls="dataTable"
+														rowspan="1" colspan="1"
+														aria-label="Position: activate to sort column ascending"
+														style="width: 100px;">교과목명</th>
+													<th class="sorting" tabindex="0" aria-controls="dataTable"
+														rowspan="1" colspan="1"
+														aria-label="Office: activate to sort column ascending"
+														style="width: 50px;">학점</th>
+													<th class="sorting" tabindex="0" aria-controls="dataTable"
+														rowspan="1" colspan="1"
+														aria-label="Start date: activate to sort column ascending"
+														style="width: 130px;">강의요일</th>
+													<th class="sorting" tabindex="0" aria-controls="dataTable"
+														rowspan="1" colspan="1"
+														aria-label="Salary: activate to sort column ascending"
+														style="width: 100px;">담당교수</th>
+												</tr>
+											</thead>
+											<tbody id="courseList">
+												<tr role="row" class="odd">
+													<td colspan="6">검색 버튼으로 검색해주세요</td>
+												<tr>
+											</tbody>
+										</table>
+									</div>
+
+									<div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+										<div class="ps__thumb-x" tabindex="0"
+											style="left: 0px; width: 0px;"></div>
+									</div>
+									<div class="ps__rail-y"
+										style="top: 0px; height: 731px; right: 0px;">
+										<div class="ps__thumb-y" tabindex="0"
+											style="top: 0px; height: 0px;"></div>
+									</div>
+								</div>
+							</div>
+							<div class="course-content h-100">
+								<div class="h-100 scrollable pos-r ps ps--active-y"
+									style="padding-right: 10px; padding-left: 10px;">
+									<div class="bgc-grey-100 peers ai-c jc-sb p-20 fxw-nw d-n@md+">
+										<div class="peer">
+											<div class="btn-group" role="group">
+												<button type="button"
+													class="back-to-course btn bgc-white bdrs-2 mR-3 cur-p">
+													<i class="ti-angle-left"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+
+
+
+									<table class="table"
+										style="border: 1px solid rgba(0, 0, 0, .0625);">
+										<thead class="thead-dark">
+											<tr>
+												<th scope="col">현재과목 수</th>
+												<th scope="col">현재 총 학점</th>
+												<th scope="col">신청 가능 학점</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<th id="currentCourseNum" scope="row">9</th>
+												<td id="registerCourseNum"> 18 </td>
+												<td><%= possibleScore %></td>
+											</tr>
+										</tbody>
+									</table>
+									<h4 class="c-grey-900 mB-20">수강 시간표</h4>
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+												<th scope="col">시간</th>
+												<th scope="col">월요일</th>
+												<th scope="col">화요일</th>
+												<th scope="col">수요일</th>
+												<th scope="col">목요일</th>
+												<th scope="col">금요일</th>
+											</tr>
+										</thead>
+<tbody>
+											<tr>
+												<th scope="row">1교시</th>
+												<td id="1h1c"></td>
+												<td id="1h2c"></td>
+												<td id="1h3c"></td>
+												<td id="1h4c"></td>
+												<td id="1h5c"></td>
+											</tr>
+											<tr>
+												<th scope="row">2교시</th>
+												<td id="2h1c"></td>
+												<td id="2h2c"></td>
+												<td id="2h3c"></td>
+												<td id="2h4c"></td>
+												<td id="2h5c"></td>
+											</tr>
+											<tr>
+												<th scope="row">3교시</th>
+												<td id="3h1c"></td>
+												<td id="3h2c"></td>
+												<td id="3h3c"></td>
+												<td id="3h4c"></td>
+												<td id="3h5c"></td>
+											</tr>
+											<tr>
+												<th scope="row">4교시</th>
+												<td id="4h1c"></td>
+												<td id="4h2c"></td>
+												<td id="4h3c"></td>
+												<td id="4h4c"></td>
+												<td id="4h5c"></td>
+											</tr>
+											<tr>
+												<th scope="row">5교시</th>
+												<td id="5h1c"></td>
+												<td id="5h2c"></td>
+												<td id="5h3c"></td>
+												<td id="5h4c"></td>
+												<td id="5h5c"></td>
+											</tr>
+											<tr>
+												<th scope="row">6교시</th>
+												<td id="6h1c"></td>
+												<td id="6h2c"></td>
+												<td id="6h3c"></td>
+												<td id="6h4c"></td>
+												<td id="6h5c"></td>
+											</tr>
+											<tr>
+												<th scope="row">7교시</th>
+												<td id="7h1c"></td>
+												<td id="7h2c"></td>
+												<td id="7h3c"></td>
+												<td id="7h4c"></td>
+												<td id="7h5c"></td>
+											</tr>
+											<tr>
+											    <th scope="row">8교시</th>
+												<td id="8h1c"></td>
+												<td id="8h2c"></td>
+												<td id="8h3c"></td>
+												<td id="8h4c"></td>
+												<td id="8h5c"></td>
+											</tr>
+										</tbody>									
+
+</table>
+
+
+									<div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+										<div class="ps__thumb-x" tabindex="0"
+											style="left: 0px; width: 0px;"></div>
+									</div>
+									<div class="ps__rail-y"
+										style="top: 0px; right: 0px; height: 843px;">
+										<div class="ps__thumb-y" tabindex="0"
+											style="top: 0px; height: 822px;"></div>
+									</div>
+									<h4 class="c-grey-900 mB-20">신청 현황</h4>
+									<table class="table table-bordered">
+										<colgroup>
+											<col width="12%" />
+											<col width="22%" />
+											<col width="12%" />
+											<col width="22%" />
+											<col width="22%" />
+											<col width="*" />
+										</colgroup>
+										<thead>
+											<tr role="row">
+												<th class="sorting_asc" tabindex="0"
+													aria-controls="dataTable" rowspan="1" colspan="1"
+													aria-sort="ascending"
+													aria-label="Name: activate to sort column descending"
+													style="width: 80px;">과목번호</th>
+												<th class="sorting" tabindex="0" aria-controls="dataTable"
+													rowspan="1" colspan="1"
+													aria-label="Position: activate to sort column ascending"
+													style="width: 100px;">교과목명</th>
+												<th class="sorting" tabindex="0" aria-controls="dataTable"
+													rowspan="1" colspan="1"
+													aria-label="Office: activate to sort column ascending"
+													style="width: 50px;">학점</th>
+												<th class="sorting" tabindex="0" aria-controls="dataTable"
+													rowspan="1" colspan="1"
+													aria-label="Start date: activate to sort column ascending"
+													style="width: 130px;">강의요일</th>
+												<th class="sorting" tabindex="0" aria-controls="dataTable"
+													rowspan="1" colspan="1"
+													aria-label="Salary: activate to sort column ascending"
+													style="width: 100px;">담당교수</th>
+												<th class="sorting" tabindex="0" aria-controls="dataTable"
+													rowspan="1" colspan="1"
+													aria-label="Salary: activate to sort column ascending"
+													style="width: 10px;">취소</th>
+											</tr>
+										</thead>
+										<tbody id="myCourse">
+											<tr role="row" class="odd">
+												<td colspan="6" class="sorting_1">신청 수업이 없습니다</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</main>
+
+
+
+<% include ../layout/footer.html %>
+<script type="text/javascript" src="/vendor.js"></script>
+<script type="text/javascript" src="/bundle.js"></script>
+<script>
+var course = {
+	getMyCourse : function() {
+		$.ajax({
+         	url:'/course/get/mycourse',
+         	type: 'GET',
+         	success:function(data) {
+         		$("#myCourse").empty();
+         		course.cleanPreView();
+         		if(data.result.code == 200) {
+					
+					var innerHtml = '';
+					var result = data.result.response;
+
+					var sumCourseScore = 0;
+
+					console.log(result);
+
+					if(result.length > 0) {
+						for(var i=0; i < result.length; i++) {
+							innerHtml +='<tr role="row" class="odd">';
+							innerHtml +='<td class="sorting_1">' + result[i].courseVO.courseTimeList[0].seq + '</td>';
+							innerHtml +='<td>' + result[i].courseVO.name + '</td>';
+							innerHtml +='<td>' + result[i].courseVO.score + '</td>';
+							innerHtml +='<td>' + result[i].courseVO.courseTimeList[0].info + '</td>';		
+							innerHtml +='<td>' + result[i].courseVO.professor.name + '</td>';
+							innerHtml +='<td><button type="button" class="btn cur-p btn-danger" onclick="course.cancelCourse('+result[i].seq +')">취소</button></td>';
+							innerHtml +='</tr>';
+							sumCourseScore += result[i].courseVO.score;
+							
+							var courseTimeTable = result[i].courseVO.courseTimeList[0].timeTable;
+
+							for(var j=0; j < courseTimeTable.length; j++) {
+								for(var c=0; c <= courseTimeTable[j].end - courseTimeTable[j].start; c++) {
+									var elementId = '#' + (courseTimeTable[j].start+c) + 'h' + courseTimeTable[j].day  +'c';
+									$(elementId).html(result[i].courseVO.name);
+								}
+							}
+						}	
+					} else {
+						innerHtml += '<td colspan="6" class="sorting_1">신청 수업이 없습니다</td>';
+					}
+
+					$("#currentCourseNum").html(result.length);
+             		$("#registerCourseNum").html(sumCourseScore);
+
+					$('#myCourse').html(innerHtml);
+
+         		} else {
+         			$.alert({
+					    title: 'ERROR',
+					    content: data.result.message,
+					});
+         		}
+             		
+
+					
+        	  }
+	      	});
+	},
+
+	searchCourse : function() {
+		var searchType = $(':radio[name="searchTypeRadios"]:checked').val();
+		var searchName = $("#searchName").val();
+		$.ajax({
+			url:'/course/get/courses',
+			dataType: 'json',
+            type: 'GET',
+			data: {
+				searchType: searchType,
+				searchName: searchName
+			},
+			success:function(data) {
+				if(data.result.code == 200) {
+					$('#courseList').empty();
+					var innerHtml = '';
+					var result = data.result.response;
+
+					if(result.length > 0) {
+						for(var i=0; i < result.length; i++) {
+							for(var j=0; j < result[i].courseTimeList.length; j++) {
+								innerHtml +='<tr role="row" class="odd">';
+								innerHtml +='<td>';
+								innerHtml +='<div class="checkbox checkbox-circle checkbox-info peers ai-c" style="vertical-align: middle !important;">';
+								innerHtml +='<input type="checkbox" id="inputCall' + result[i].courseTimeList[j].seq + '" name="inputCheckboxesCall" class="peer" value="' + result[i].courseTimeList[j].seq + '"> <label for="inputCall' + result[i].courseTimeList[j].seq + '" class="peers peer-greed js-sb ai-c"></label>';
+								innerHtml += '</div>';
+								innerHtml += '</td>';
+								innerHtml +='<td class="sorting_1">' + result[i].courseTimeList[j].seq + '</td>';
+								innerHtml +='<td>' + result[i].name + '</td>';
+								innerHtml +='<td>' + result[i].score + '</td>';
+								innerHtml +='<td>' + result[i].courseTimeList[j].info + '</td>';		
+								innerHtml +='<td>' + result[i].professor.name + '</td>';
+								innerHtml +='</tr>';	
+							}
+						}
+					} else {
+						innerHtml = '<td colspan="6" class="sorting_1">검색 결과가 없습니다</td>';
+					}
+					
+					$('#courseList').html(innerHtml);
+				} else {
+					$.alert({
+					    title: '경고',
+					    content: data.result.message,
+					});
+				}
+				
+			}
+		});
+	},
+
+	register : function() {
+		var array = new Array();
+
+		$('input:checkbox[name="inputCheckboxesCall"]').each(function() {
+			if(this.checked){
+				array.push(this.value);
+			}
+		});
+
+		if(array.length < 1) {
+			$.alert({
+			    title: '경고',
+			    content: '과목을 적어도 1개 이상 선택해주세요',
+			});	
+
+			return false;
+		}
+
+		$.confirm({
+		    title: '확인',
+		    content: '해당 과목을 신청하시겠습니까?',
+		    buttons: {
+		        confirm: {
+		        	text: '확인',
+            		btnClass: 'btn-blue',
+					action:function () {
+			        	$.ajax({
+							url:'/course/register',
+							dataType: 'json',
+							type: 'POST',
+							data: {courseList: array.join(',')},
+							success:function(data) {
+								if(data.result.code == 200) {
+									course.getMyCourse();
+									 $.alert({
+									    title: '알림',
+									    content: data.result.message,
+									});
+								} else {
+									$.alert({
+									    title: '경고',
+									    content: data.result.message,
+									});
+								}
+							}
+						});
+			        }
+		        },
+		        cancel: {
+					text: '취소',
+            		btnClass: 'btn-default',
+					action:function () {
+				    }
+		        }
+		    }
+		});
+		/**/
+	},
+
+	cancelCourse : function(seq) {
+		$.confirm({
+		    title: '확인',
+		    content: '해당 과목 신청을 취소 하시겠습니까?',
+		    buttons: {
+		        confirm: {
+					text: '확인',
+            		btnClass: 'btn-blue',
+            		action:function(){
+			            $.ajax({
+			         	      url:'/course/cancel/mycourse',
+			                      dataType: 'json',
+			                      type: 'GET',
+			                      data: {data:seq},
+			         		success:function(data) {
+			         			if(data.result.code == 200) {
+			         				course.getMyCourse();
+			         				$.alert({
+									    title: '알림',
+									    content: data.result.message,
+									});
+			         			} else {
+			         				$.alert({
+									    title: '경고',
+									    content: data.result.message,
+									});
+			         			}
+			         			
+			         		}
+			         	});
+            		}
+		        },
+		        cancel:{
+		        	text: '취소',
+            		btnClass: 'btn-default',
+            		action:function () {
+		        	}
+		        } 
+		    }
+		});
+
+
+		
+	},
+
+	cleanPreView : function() {
+		for(var i=1; i < 9; i++) {
+			for(var j=1; j < 6; j++) {
+				var elementId = '#' + i + 'h' + j  +'c';
+				$(elementId).html('');
+			}
+		}
+	}
+
+}
+
+$( document ).ready(function() {
+	
+	// course.getMyCousre();
+
+	$.ajax({
+         	url:'/course/get/mycourse',
+         	type: 'GET',
+         	success:function(data) {
+         		$("#myCourse").empty();
+         		if(data.result.code == 200) {
+					
+					var innerHtml = '';
+					var result = data.result.response;
+
+					var sumCourseScore = 0;
+
+					if(result.length > 0) {
+						for(var i=0; i < result.length; i++) {
+							innerHtml +='<tr role="row" class="odd">';
+							innerHtml +='<td class="sorting_1">' + result[i].courseVO.courseTimeList[0].seq + '</td>';
+							innerHtml +='<td>' + result[i].courseVO.name + '</td>';
+							innerHtml +='<td>' + result[i].courseVO.score + '</td>';
+							innerHtml +='<td>' + result[i].courseVO.courseTimeList[0].info + '</td>';		
+							innerHtml +='<td>' + result[i].courseVO.professor.name + '</td>';
+							innerHtml +='<td><button type="button" class="btn cur-p btn-danger" onclick="course.cancelCourse('+result[i].seq +')">취소</button></td>';
+							innerHtml +='</tr>';
+							sumCourseScore += result[i].courseVO.score;
+							
+							var courseTimeTable = result[i].courseVO.courseTimeList[0].timeTable;
+
+							for(var j=0; j < courseTimeTable.length; j++) {
+								for(var c=0; c <= courseTimeTable[j].end - courseTimeTable[j].start; c++) {
+									var elementId = '#' + (courseTimeTable[j].start+c) + 'h' + courseTimeTable[j].day  +'c';
+									$(elementId).html(result[i].courseVO.name);
+								}
+							}
+						}	
+					}
+
+					$("#currentCourseNum").html(result.length);
+             		$("#registerCourseNum").html(sumCourseScore);
+
+					$('#myCourse').html(innerHtml);
+
+         		} else {
+         			alert(data.result.message)
+         		}
+             		
+
+					
+        	  }
+	      	});
+
+	$("#registerBtn").on("click", function() {
+		course.register();
+	});
+
+	$("#searchCourse").on("click", function() {
+		course.searchCourse();
+	});
+});
+
+</script>
+</body>
+</html>
