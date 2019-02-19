@@ -25,6 +25,7 @@ front-end는 nodeJs, Webpack으로 구성되어있으며, 실행 및 개발을 �
 
 ## back-end
 ### Getting Started
+back-end는 Spring-boot, jedis, mybatis, gradle 등 으로 구성되어있으며, 실행 및 개발을 위해 아래의 플로우를 진행합니다.
 ### Prerequisites
   - eclipse or dev tool
   - Java 1.8 이상
