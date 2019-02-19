@@ -40,25 +40,30 @@
         type: 'GET',
         success:function(data) {
           if(data.result.code == 200) {
-            $.confirm({
-                title: '확인',
-                content: data.result.message,
-                buttons: {
-                    confirm: {
-                      text: '확인',
-                      btnClass: 'btn-blue',
-                      action:function(){
-                       $(location).attr('href', '/logout');
-                      }
-                    },
-                    cancel:{
-                      text: '취소',
-                        btnClass: 'btn-default',
-                        action:function () {
-                      }
-                    } 
-                }
-            });
+            console.log(data);
+            if(false == data.result.check) {
+              $.confirm({
+                  title: '확인',
+                  content: data.result.message,
+                  buttons: {
+                      confirm: {
+                        text: '확인',
+                        btnClass: 'btn-blue',
+                        action:function(){
+                         $(location).attr('href', '/logout');
+                        }
+                      },
+                      cancel:{
+                        text: '취소',
+                          btnClass: 'btn-default',
+                          action:function () {
+                        }
+                      } 
+                  }
+              });  
+            } else {
+              $(location).attr('href', '/logout');
+            }
           } else {
           
           }

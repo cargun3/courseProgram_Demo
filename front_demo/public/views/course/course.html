@@ -321,7 +321,7 @@ var course = {
 
 					if(result.length > 0) {
 						for(var i=0; i < result.length; i++) {
-							innerHtml +='<tr role="row" class="odd">';
+							innerHtml +='<tr role="row" class="odd" data-seq="' + result[i].courseVO.courseTimeList[0].seq +'">';
 							innerHtml +='<td class="sorting_1">' + result[i].courseVO.courseTimeList[0].seq + '</td>';
 							innerHtml +='<td>' + result[i].courseVO.name + '</td>';
 							innerHtml +='<td>' + result[i].courseVO.score + '</td>';
@@ -343,7 +343,6 @@ var course = {
 					} else {
 						innerHtml += '<td colspan="6" class="sorting_1">신청 수업이 없습니다</td>';
 					}
-
 					$("#currentCourseNum").html(result.length);
              		$("#registerCourseNum").html(sumCourseScore);
 
@@ -382,7 +381,16 @@ var course = {
 					if(result.length > 0) {
 						for(var i=0; i < result.length; i++) {
 							for(var j=0; j < result[i].courseTimeList.length; j++) {
-								innerHtml +='<tr role="row" class="odd">';
+								var color = '';
+
+								$('#myCourse').find('tr').each(function() {
+									var seq = $(this).data('seq');
+									if(seq == result[i].courseTimeList[j].seq) {
+										color = ' style="color: red;"'
+									}
+								});
+
+								innerHtml +='<tr role="row" class="odd"' + color + '>';
 								innerHtml +='<td>';
 								innerHtml +='<div class="checkbox checkbox-circle checkbox-info peers ai-c" style="vertical-align: middle !important;">';
 								innerHtml +='<input type="checkbox" id="inputCall' + result[i].courseTimeList[j].seq + '" name="inputCheckboxesCall" class="peer" value="' + result[i].courseTimeList[j].seq + '"> <label for="inputCall' + result[i].courseTimeList[j].seq + '" class="peers peer-greed js-sb ai-c"></label>';
@@ -540,12 +548,12 @@ $( document ).ready(function() {
 					
 					var innerHtml = '';
 					var result = data.result.response;
-
+					console.log(result);
 					var sumCourseScore = 0;
 
 					if(result.length > 0) {
 						for(var i=0; i < result.length; i++) {
-							innerHtml +='<tr role="row" class="odd">';
+							innerHtml +='<tr role="row" class="odd" data-seq="' + result[i].courseVO.courseTimeList[0].seq +'">';
 							innerHtml +='<td class="sorting_1">' + result[i].courseVO.courseTimeList[0].seq + '</td>';
 							innerHtml +='<td>' + result[i].courseVO.name + '</td>';
 							innerHtml +='<td>' + result[i].courseVO.score + '</td>';

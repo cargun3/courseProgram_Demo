@@ -33,6 +33,10 @@ private static final long serialVersionUID = 1L;
 	public void setMinScore(int minScore) {
 		this.minScore = minScore;
 	}
+	
+	public int getPossibleScore() {
+		return possibleScore;
+	}
 	public void setPossibleScore(int possibleScore) {
 		this.possibleScore = possibleScore;
 	}
