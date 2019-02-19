@@ -31,5 +31,8 @@ router.post('/register', auth.isLoggedIn, function(req, res) {
         course.registerCourse(req, res);
 });
 
+router.get('/get/overscore', auth.isLoggedIn, function(req, res) {
+        course.getOverCourse(req, res);
+});
 
 module.exports = router;

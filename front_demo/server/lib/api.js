@@ -63,11 +63,20 @@ module.exports = function (basePath) {
 	   registerCourse : function(req, callback) {
                 OPTIONS.url = HOST + ':' + PORT + BASE_PATH + '/v1.0/register';
                 OPTIONS.headers = {'Content-Type': 'application/json'};
-		var body = new Object();
+		        var body = new Object();
                 body.courseList=req.body.courseList;
                 body.memberSeq=req.user.memberSeq;
                 OPTIONS.body = JSON.stringify(body);
                 request.post(OPTIONS, function (err, res, result) {
+                    statusCodeErrorHandler(res.statusCode, callback, result);
+                });
+
+            },
+
+             getOverCourse: function(req, callback) {
+                OPTIONS.url = HOST + ':' + PORT + BASE_PATH + '/v1.0/get/overScore?memberSeq=' + req.user.memberSeq;
+                OPTIONS. headers = {'Content-Type': 'application/json'};
+                request.get(OPTIONS, function (err, res, result) {
                     statusCodeErrorHandler(res.statusCode, callback, result);
                 });
 

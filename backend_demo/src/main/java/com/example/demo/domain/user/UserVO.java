@@ -10,26 +10,30 @@ import io.swagger.annotations.ApiModelProperty;
 public class UserVO extends CommonVO implements Serializable {
 private static final long serialVersionUID = 1L;
 	
-	@ApiModelProperty(value="¸â¹öSEQ")
+	@ApiModelProperty(value="ë©¤ë²„SEQ")
 	private String memberSeq;
 	@ApiModelProperty(value="ID")
 	private String id;
-	@ApiModelProperty(value="¾ÏÈ£")
+	@ApiModelProperty(value="ì•”í˜¸")
 	private String pw;
-	@ApiModelProperty(value="ÀÌ¸§")
+	@ApiModelProperty(value="ì´ë¦„")
 	private String name;
-	@ApiModelProperty(value="½ÅÃ» °¡´ÉÇÑ ÇĞÁ¡")
-	private String possibleScore;
-	@ApiModelProperty(value="token ½Ã°£")
+	@ApiModelProperty(value="ì‹ ì²­ ê°€ëŠ¥í•œ í•™ì ")
+	private int possibleScore;
+	@ApiModelProperty(value="ìµœì†Œ í•™ì ")
+	private int minScore;
+	@ApiModelProperty(value="token ì‹œê°„")
 	private int timeout;
-	@ApiModelProperty(value="token ½Ã°£´ÜÀ§")
+	@ApiModelProperty(value="token ì‹œê°„ë‹¨ìœ„")
 	private TimeUnit timeUnit;
 	
-	
-	public String getPossibleScore() {
-		return possibleScore;
+	public int getMinScore() {
+		return minScore;
 	}
-	public void setPossibleScore(String possibleScore) {
+	public void setMinScore(int minScore) {
+		this.minScore = minScore;
+	}
+	public void setPossibleScore(int possibleScore) {
 		this.possibleScore = possibleScore;
 	}
 	public String getMemberSeq() {

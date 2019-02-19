@@ -10,7 +10,7 @@ import com.example.demo.domain.course.UserCourseVO;
 public interface CourseMapper {
 
 	/**
-	 * ¼ö¾÷ ¸ñ·Ï
+	 * ìˆ˜ì—… ëª©ë¡
 	 * @param map 
 	 * @param 
 	 * @return
@@ -26,6 +26,8 @@ public interface CourseMapper {
 	public List<String> selectSameTimeOverLapCourseList(Map<String, Object> map);
 	
 	public void insertCourse(Map<String, Object> map);
+
+	public int selectIsOverMinCourseScore(String memberSeq);
 
 }
 

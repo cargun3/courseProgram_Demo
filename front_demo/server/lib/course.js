@@ -30,5 +30,10 @@ registerCourse: function(req, res) {
         res.send({result:result});
    });
  },
-
+ 
+getOverCourse: function(req, res) {
+   API_Call.getOverCourse(req, function (err, result) {
+        res.send({result:result});
+   });
+ },
 }

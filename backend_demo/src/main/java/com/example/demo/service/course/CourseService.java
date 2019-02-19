@@ -11,7 +11,7 @@ import com.example.demo.domain.course.UserCourseVO;
 public interface CourseService {
 	
 	/**
-	 * ¼ö¾÷ ¸ñ·Ï
+	 * ìˆ˜ì—… ëª©ë¡
 	 * @param searchName 
 	 * @param searchType 
 	 * @param paging 
@@ -21,14 +21,14 @@ public interface CourseService {
 	public List<CourseVO> courseList(String searchType, String searchName, PagingVO paging);
 	
 	/**
-	 * ¼ö¾÷ Ãë¼Ò
+	 * ìˆ˜ì—… ì·¨ì†Œ
 	 * @param courseTimeSeq
 	 * @return
 	 */
 	public boolean removeCourseInfo(String courseTimeSeq) throws Exception;
 
 	/**
-	 * »ç¿ëÀÚ°¡ ½ÅÃ»ÇÑ ¼ö¾÷ ¸ñ·Ï
+	 * ì‚¬ìš©ìê°€ ì‹ ì²­í•œ ìˆ˜ì—… ëª©ë¡
 	 * @param memberSeq 
 	 * @param paging 
 	 * @return
@@ -36,10 +36,17 @@ public interface CourseService {
 	public List<UserCourseVO> userCourseList(String memberSeq, PagingVO paging);
 	
 	/**
-	 * ¼ö¾÷ µî·Ï
+	 * ìˆ˜ì—… ë“±ë¡
 	 * @param courseList 
 	 * @param memberSeq 
 	 * @return
 	 */
 	public List<String> registerCourseList(String[] courseList, String memberSeq) throws Exception;
+
+	/**
+	 * ìˆ˜ê°• ì‹ ì²­ í•™ì  > ìµœì†Œí•™ì  íŒë‹¨
+	 * @param memberSeq 
+	 * @return
+	 */
+	public boolean getOverMinCourseScore(String memberSeq);
 }

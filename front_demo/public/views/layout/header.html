@@ -22,7 +22,7 @@
                 </a>
                 <ul class="dropdown-menu fsz-sm">
                   <li>
-                    <a href="/logout" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700">
+                    <a id="logoutBtn" onclick="logoutFnc()"href="javascript:void(0);" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700">
                       <i class="ti-power-off mR-10"></i>
                       <span>Logout</span>
                     </a>
@@ -32,3 +32,39 @@
             </ul>
           </div>
         </div>
+<script>
+  function logoutFnc() {
+    $.ajax({
+        url:'/course/get/overscore',
+        dataType: 'json',
+        type: 'GET',
+        success:function(data) {
+          if(data.result.code == 200) {
+            $.confirm({
+                title: '확인',
+                content: data.result.message,
+                buttons: {
+                    confirm: {
+                      text: '확인',
+                      btnClass: 'btn-blue',
+                      action:function(){
+                       $(location).attr('href', '/logout');
+                      }
+                    },
+                    cancel:{
+                      text: '취소',
+                        btnClass: 'btn-default',
+                        action:function () {
+                      }
+                    } 
+                }
+            });
+          } else {
+          
+          }
+                
+        }
+    });
+    
+  }
+</script>

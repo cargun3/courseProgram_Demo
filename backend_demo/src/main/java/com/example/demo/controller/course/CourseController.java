@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +38,7 @@ public class CourseController {
 	@Autowired
 	private ServiceComponent service;
 
-	@ApiOperation(value = "", notes = "°­ÀÇ ¸ñ·Ï °¡Á®¿À±â")
+	@ApiOperation(value = "", notes = "ê°•ì˜ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°")
 	@GetMapping("/v1.0/list")
 	public ResponseVO<List<CourseVO>> courseList(@RequestParam String searchType, @RequestParam String searchName,
 			PagingVO paing) {
@@ -52,7 +51,7 @@ public class CourseController {
 		return responseVO;
 	}
 
-	@ApiOperation(value = "", notes = "½ÅÃ»ÇÑ °­ÀÇ ¸ñ·Ï °¡Á®¿À±â")
+	@ApiOperation(value = "", notes = "ì‹ ì²­í•œ ê°•ì˜ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°")
 	@GetMapping("/v1.0/user/list")
 	public ResponseVO<List<UserCourseVO>> registerCourseList(@RequestParam String memberSeq, PagingVO paging) {
 		ResponseVO<List<UserCourseVO>> responseVO = new ResponseVO<>();
@@ -65,7 +64,7 @@ public class CourseController {
 		return responseVO;
 	}
 
-	@ApiOperation(value = "", notes = "°­ÀÇ ½ÅÃ»")
+	@ApiOperation(value = "", notes = "ê°•ì˜ ì‹ ì²­")
 	@PostMapping("/v1.0/register")
 	public ResponseVO<List<String>> courseInsert(@RequestBody Map<String, Object> body, Locale locale) throws Exception {
 		ResponseVO<List<String>> responseVO = new ResponseVO<List<String>>();
@@ -84,7 +83,7 @@ public class CourseController {
 		return responseVO;
 	}
 
-	@ApiOperation(value = "", notes = "½ÅÃ»ÇÑ °­ÀÇ Ãë¼Ò")
+	@ApiOperation(value = "", notes = "ì‹ ì²­í•œ ê°•ì˜ ì·¨ì†Œ")
 	@DeleteMapping("/v1.0/removeInfo")
 	public ResponseVO<Object> codeDelete(@RequestParam String seq, Locale locale) throws Exception {
 		ResponseVO<Object> responseVO = new ResponseVO<>();
@@ -94,7 +93,19 @@ public class CourseController {
 		return responseVO;
 	}
 
-	@ApiOperation(value = "", notes = "Å×½ºÆ®")
+	@ApiOperation(value = "", notes = "ìˆ˜ê°•ì‹ ì²­ í•™ì  > ìµœì†Œí•™ì  íŒë‹¨")
+	@GetMapping("/v1.0/get/overScore")
+	public ResponseVO<Object> isMinCourseScore(@RequestParam String memberSeq, Locale locale) throws Exception {
+		ResponseVO<Object> responseVO = new ResponseVO<>();
+		boolean check = service.getCourseService().getOverMinCourseScore(memberSeq);
+		responseVO.setCheck(check);
+		if(!check) {
+			responseVO.setMessage(common.getMsg().getMessage("not_Over", new String[] {}, locale));
+		} 
+		return responseVO;
+	}
+	
+	@ApiOperation(value = "", notes = "í…ŒìŠ¤íŠ¸")
 	@PostMapping("/v1.0/test")
 	/* public ResponseVO<Object> test(@RequestBody Map<String, Object> username){ */
 	public ResponseVO<Object> test(@RequestBody UserVO user) {

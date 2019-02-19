@@ -150,6 +150,23 @@
 		OR (QQ.TIME_TABLE_DAY=PP.TIME_TABLE_DAY AND QQ.TIME_TABLE_START=PP.TIME_TABLE_START AND QQ.TIME_TABLE_END=PP.TIME_TABLE_END)
 	</select>
 	
+	
+	<!-- 신청학점 > 최소학점 판단 -->
+	<select id="selectIsOverMinCourseScore" parameterType="String" resultType="int" >
+		SELECT
+			CASE
+				WHEN 
+					SUM(C.COURSE_SCORE) > D.MEMBER_MIN_SCORE THEN 1
+				ELSE
+					0
+			END
+			FROM TB_REGISTER_COURSE A
+		LEFT OUTER JOIN TB_COURSE_TIME B ON A.COURSE_TIME_IDX = B.COURSE_TIME_IDX
+		LEFT OUTER JOIN TB_COURSE C ON B.COURSE_IDX = C.COURSE_IDX
+  		LEFT OUTER JOIN TB_MEMBER D ON A.MEMBER_IDX = D.MEMBER_IDX
+		WHERE A.MEMBER_IDX = #{memberSeq}
+	</select>
+	
 	<!-- 수업 등록 -->
 	<insert id="insertCourse" parameterType="Map">
 		INSERT INTO TB_REGISTER_COURSE (

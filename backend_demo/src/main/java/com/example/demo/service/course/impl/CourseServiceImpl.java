@@ -1,10 +1,10 @@
 package com.example.demo.service.course.impl;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -81,5 +81,11 @@ public class CourseServiceImpl implements CourseService {
 		}
 		
 		return overLapList;
+	}
+
+	@Override
+	public boolean getOverMinCourseScore(String memberSeq) {
+		boolean isOver = mapper.getCourseMapper().selectIsOverMinCourseScore(memberSeq) > 0 ? true : false;
+		return isOver;
 	}
 }
