@@ -12,15 +12,15 @@ public class UserCourseVO extends CommonVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value="신청한 수업SEQ")
-	private String seq;
+	private int seq;
 	@ApiModelProperty(value="수업 정보")
 	private CourseVO courseVO;
 
-	public String getSeq() {
+	public int getSeq() {
 		return seq;
 	}
 
-	public void setSeq(String seq) {
+	public void setSeq(int seq) {
 		this.seq = seq;
 	}
 
