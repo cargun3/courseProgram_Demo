@@ -25,10 +25,8 @@
 												<button type="button" class="my-course-toggle d-n@md+ btn bgc-white bdrs-2 mR-3 cur-p">
 													<i class="ti-angle-right"></i>
 												</button>
-												<button type="button" id="registerBtn"
-													class="btn bgc-white bdrs-2 mR-3 cur-p" data-toggle="modal" data-target="#exampleModal">
-													<i class="ti-folder"></i>
-												</button>
+												<button id="registerBtn" class="btn btn-primary" 
+												style="float: right; display: inline-block; vertical-align: middle; border-top-left-radius: .25rem; border-bottom-left-radius:.25rem;">신청</button>
 											</div>
 										</div>
 									</div>
@@ -348,6 +346,16 @@ var course = {
 
 					$('#myCourse').html(innerHtml);
 
+					$('#courseList').find('tr').each(function(){
+						var el = $(this);
+						el.css('color', 'black');
+						$('#myCourse').find('tr').each(function() {
+							var seq = $(this).data('seq');
+							if(seq == el.data('courseseq')) {
+								el.css('color', 'red');
+							}
+						});
+					});
          		} else {
          			$.alert({
 					    title: 'ERROR',
@@ -390,7 +398,7 @@ var course = {
 									}
 								});
 
-								innerHtml +='<tr role="row" class="odd"' + color + '>';
+								innerHtml +='<tr role="row" class="odd"' + color + ' data-courseseq="'+result[i].courseTimeList[j].seq+'">';
 								innerHtml +='<td>';
 								innerHtml +='<div class="checkbox checkbox-circle checkbox-info peers ai-c" style="vertical-align: middle !important;">';
 								innerHtml +='<input type="checkbox" id="inputCall' + result[i].courseTimeList[j].seq + '" name="inputCheckboxesCall" class="peer" value="' + result[i].courseTimeList[j].seq + '"> <label for="inputCall' + result[i].courseTimeList[j].seq + '" class="peers peer-greed js-sb ai-c"></label>';
@@ -454,6 +462,10 @@ var course = {
 							success:function(data) {
 								if(data.result.code == 200) {
 									course.getMyCourse();
+									$('input:checkbox[name="inputCheckboxesCall"]').each(function() {
+										this.checked = false;
+									});
+
 									 $.alert({
 									    title: '알림',
 									    content: data.result.message,
