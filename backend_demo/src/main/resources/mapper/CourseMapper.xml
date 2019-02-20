@@ -99,7 +99,7 @@
 	
 	
 	<!-- 동시 신청 중복 체크 -->
-	<select id="selectSameTimeOverLapCourseList" resultType="String" parameterType="Map">
+	<!-- <select id="selectSameTimeOverLapCourseList" resultType="String" parameterType="Map">
 		SELECT
 			TC.COURSE_NAME
 		FROM TB_COURSE TC
@@ -109,10 +109,58 @@
 				#{course}
 		</foreach>
 		GROUP BY TC.COURSE_NAME HAVING COUNT(TC.COURSE_NAME) > 1;
+	</select> -->
+	<select id="selectSameTimeOverLapCourseList" resultType="String" parameterType="Map">
+		SELECT DISTINCT QQ.COURSE_IDX AS FF, QQ.COURSE_NAME AS EE FROM 
+		(
+			SELECT 
+				A.COURSE_IDX
+				,A.COURSE_TIME_IDX
+				,B.COURSE_NAME
+				,C.TIME_TABLE_DAY
+				,C.TIME_TABLE_START
+				,C.TIME_TABLE_END
+			FROM TB_COURSE_TIME A
+			LEFT OUTER JOIN TB_COURSE B ON A.COURSE_IDX = B.COURSE_IDX
+			LEFT OUTER JOIN TB_COURSE_TIME_TABLE C ON A.COURSE_TIME_IDX = C.COURSE_TIME_IDX
+			WHERE A.COURSE_TIME_IDX IN
+			<foreach item="course" collection="courseList" open="(" separator="," close=")">
+				#{course}
+			</foreach>
+		) QQ
+		INNER JOIN 
+		(
+			SELECT 
+				A.COURSE_IDX
+				,A.COURSE_TIME_IDX
+				,B.COURSE_NAME
+				,C.TIME_TABLE_DAY
+				,C.TIME_TABLE_START
+				,C.TIME_TABLE_END
+			FROM TB_COURSE_TIME A
+			LEFT OUTER JOIN TB_COURSE B ON A.COURSE_IDX = B.COURSE_IDX
+			LEFT OUTER JOIN TB_COURSE_TIME_TABLE C ON A.COURSE_TIME_IDX = C.COURSE_TIME_IDX
+			WHERE A.COURSE_TIME_IDX IN
+						<foreach item="course" collection="courseList" open="(" separator="," close=")">
+				#{course}
+			</foreach>
+		) PP ON  
+			CASE
+				WHEN QQ.COURSE_IDX  != PP.COURSE_IDX THEN
+					QQ.COURSE_IDX  != PP.COURSE_IDX AND
+					QQ.TIME_TABLE_DAY = PP.TIME_TABLE_DAY AND
+					(
+						QQ.TIME_TABLE_START  BETWEEN PP.TIME_TABLE_START AND PP.TIME_TABLE_END  OR  QQ.TIME_TABLE_END BETWEEN PP.TIME_TABLE_START AND PP.TIME_TABLE_END
+						OR
+						PP.TIME_TABLE_START  BETWEEN QQ.TIME_TABLE_START AND QQ.TIME_TABLE_END  OR  PP.TIME_TABLE_END BETWEEN QQ.TIME_TABLE_START AND QQ.TIME_TABLE_END
+					)
+				ELSE
+					QQ.COURSE_IDX = PP.COURSE_IDX AND QQ.COURSE_TIME_IDX != PP.COURSE_TIME_IDX
+			END
 	</select>
 	
 	<!-- 수업 중복 체크 -->
-	<select id="selectOverLapCourseList" resultType="String" parameterType="Map">
+	<!-- <select id="selectOverLapCourseList" resultType="String" parameterType="Map">
 		SELECT
 			DISTINCT QQ.COURSE_NAME
 		FROM 
@@ -148,8 +196,52 @@
 			WHERE TR.MEMBER_IDX = #{memberSeq}
 		) PP ON QQ.COURSE_IDX = PP.COURSE_IDX 
 		OR (QQ.TIME_TABLE_DAY=PP.TIME_TABLE_DAY AND QQ.TIME_TABLE_START=PP.TIME_TABLE_START AND QQ.TIME_TABLE_END=PP.TIME_TABLE_END)
-	</select>
+	</select> -->
 	
+	<select id="selectOverLapCourseList" resultType="String" parameterType="Map">
+		SELECT
+			DISTINCT QQ.COURSE_NAME
+		FROM 
+		(
+			SELECT 
+				A.COURSE_IDX
+				,A.COURSE_TIME_IDX
+				,B.COURSE_NAME
+				,C.TIME_TABLE_DAY
+				,C.TIME_TABLE_START
+				,C.TIME_TABLE_END
+			FROM TB_COURSE_TIME A
+			LEFT OUTER JOIN TB_COURSE B ON A.COURSE_IDX = B.COURSE_IDX
+			LEFT OUTER JOIN TB_COURSE_TIME_TABLE C ON A.COURSE_TIME_IDX = C.COURSE_TIME_IDX
+			WHERE A.COURSE_TIME_IDX IN 
+			<foreach item="course" collection="courseList" open="(" separator="," close=")">
+				#{course}
+			</foreach>
+		) QQ
+		INNER JOIN 
+		(
+			SELECT 
+				TCT.COURSE_IDX
+				,TC.COURSE_NAME
+				,TCT.COURSE_TIME_IDX
+				,TT.TIME_TABLE_DAY
+				,TT.TIME_TABLE_START
+				,TT.TIME_TABLE_END
+			FROM TB_COURSE TC
+			LEFT OUTER JOIN TB_COURSE_TIME TCT ON TC.COURSE_IDX = TCT.COURSE_IDX
+			LEFT OUTER JOIN TB_REGISTER_COURSE TR ON TCT.COURSE_TIME_IDX = TR.COURSE_TIME_IDX
+			LEFT OUTER JOIN TB_COURSE_TIME_TABLE TT ON TCT.COURSE_TIME_IDX = TT.COURSE_TIME_IDX
+			WHERE TR.MEMBER_IDX = #{memberSeq}
+		) PP ON QQ.COURSE_IDX = PP.COURSE_IDX 
+		OR (
+			QQ.TIME_TABLE_DAY=PP.TIME_TABLE_DAY AND 
+			(
+				QQ.TIME_TABLE_START  BETWEEN PP.TIME_TABLE_START AND PP.TIME_TABLE_END  OR  QQ.TIME_TABLE_END BETWEEN PP.TIME_TABLE_START AND PP.TIME_TABLE_END
+				OR
+				PP.TIME_TABLE_START  BETWEEN QQ.TIME_TABLE_START AND QQ.TIME_TABLE_END  OR  PP.TIME_TABLE_END BETWEEN QQ.TIME_TABLE_START AND QQ.TIME_TABLE_END
+			)
+		)
+	</select>
 	
 	<!-- 신청학점 > 최소학점 판단 -->
 	<select id="selectIsOverMinCourseScore" parameterType="String" resultType="int" >
@@ -167,6 +259,39 @@
 		WHERE A.MEMBER_IDX = #{memberSeq}
 	</select>
 	
+	<!-- 신청학점 > 최대학점 판단 -->
+	<select id="selectIsOverMaxCourseScore" parameterType="Map" resultType="int">
+		SELECT 
+			CASE
+				WHEN
+					USER_SCORE + COURSE_SCORE > CC.MEMBER_AVAILABLE_SCORE THEN 1
+				ELSE
+					0
+			END
+		FROM 
+		(
+			SELECT
+				SUM(D.COURSE_SCORE) AS USER_SCORE
+				, B.MEMBER_AVAILABLE_SCORE
+			FROM TB_REGISTER_COURSE A 
+			LEFT OUTER JOIN TB_MEMBER B ON A.MEMBER_IDX = B.MEMBER_IDX
+			LEFT OUTER JOIN TB_COURSE_TIME C ON A.COURSE_TIME_IDX = C.COURSE_TIME_IDX
+			LEFT OUTER JOIN TB_COURSE D ON C.COURSE_IDX = D.COURSE_IDX
+			WHERE A.MEMBER_IDX=#{memberSeq}
+		) CC
+		,
+		(
+			SELECT
+				SUM(B.COURSE_SCORE) AS COURSE_SCORE
+			FROM TB_COURSE_TIME  A
+			LEFT OUTER JOIN TB_COURSE B ON A.COURSE_IDX = B.COURSE_IDX
+			WHERE A.COURSE_TIME_IDX IN 
+			<foreach item="course" collection="courseList" open="(" separator="," close=")">
+				#{course}
+			</foreach>
+		) DD
+	
+	</select>
 	<!-- 수업 등록 -->
 	<insert id="insertCourse" parameterType="Map">
 		INSERT INTO TB_REGISTER_COURSE (

@@ -64,23 +64,32 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public List<String> registerCourseList(String[] courseList, String memberSeq)  {
+	public Map<String, Object> registerCourseList(String[] courseList, String memberSeq)  {
 		Map<String, Object> map = new HashMap<>();
 		map.put("courseList", Arrays.asList(courseList));
 		map.put("memberSeq", memberSeq);
 		List<String> overLapList = null;
+		boolean isMax = false;
 		
-		overLapList = mapper.getCourseMapper().selectOverLapCourseList(map);
+		overLapList = mapper.getCourseMapper().selectSameTimeOverLapCourseList(map);
 		
 		if(overLapList.size() < 1) {
-			overLapList = mapper.getCourseMapper().selectSameTimeOverLapCourseList(map);
+			overLapList = mapper.getCourseMapper().selectOverLapCourseList(map);
 		}
 		
 		if(overLapList.size() < 1) {
-			mapper.getCourseMapper().insertCourse(map);
+			isMax = mapper.getCourseMapper().selectIsOverMaxCourseScore(map) > 0 ? true : false;
+			if(!isMax) {
+				mapper.getCourseMapper().insertCourse(map);
+			}
 		}
 		
-		return overLapList;
+		map.clear();
+		
+		map.put("overLapList", overLapList);
+		map.put("isMax", isMax);
+		
+		return map;
 	}
 
 	@Override

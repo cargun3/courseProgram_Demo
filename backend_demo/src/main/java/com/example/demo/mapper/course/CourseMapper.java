@@ -28,6 +28,8 @@ public interface CourseMapper {
 	public void insertCourse(Map<String, Object> map);
 
 	public int selectIsOverMinCourseScore(String memberSeq);
+	
+	public int selectIsOverMaxCourseScore(Map<String, Object> map);
 
 }
 

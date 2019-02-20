@@ -1,6 +1,7 @@
 package com.example.demo.service.course;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.demo.domain.PagingVO;
 import com.example.demo.domain.ResponseVO;
@@ -41,7 +42,7 @@ public interface CourseService {
 	 * @param memberSeq 
 	 * @return
 	 */
-	public List<String> registerCourseList(String[] courseList, String memberSeq) throws Exception;
+	public Map<String, Object> registerCourseList(String[] courseList, String memberSeq) throws Exception;
 
 	/**
 	 * 수강 신청 학점 > 최소학점 판단

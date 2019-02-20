@@ -70,13 +70,21 @@ public class CourseController {
 		ResponseVO<List<String>> responseVO = new ResponseVO<List<String>>();
 		String[] courseList = String.valueOf(body.get("courseList")).split(",");
 		String memberSeq = String.valueOf(body.get("memberSeq"));
-		List<String> overLapList = service.getCourseService().registerCourseList(courseList, memberSeq);
+		Map<String, Object> result = service.getCourseService().registerCourseList(courseList, memberSeq);
+		List<String> overLapList = (List<String>) result.get("overLapList");
+		boolean isMax = (boolean) result.get("isMax");
 		responseVO.setResponse(overLapList);
 		responseVO.setMessage(common.getMsg().getMessage("register_success", new String[] {}, locale));
 		if (overLapList.size() > 0) {
 			String[] arMessage = new String[1];
 			arMessage[0] = overLapList.toString();
 			responseVO.setMessage(common.getMsg().getMessage("register_overlap", arMessage, locale));
+			responseVO.setCheck(false);
+		}
+		
+		if(isMax) {
+			String[] arMessage = new String[1];
+			responseVO.setMessage(common.getMsg().getMessage("register_overMax", arMessage, locale));
 			responseVO.setCheck(false);
 		}
 
